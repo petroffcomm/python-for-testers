@@ -9,15 +9,22 @@ from fixture.contact import ContactHelper
 
 class Application:
     def __init__(self):
-        #self.wd = WebDriver(capabilities={"marionette": False},
-        #                    firefox_binary="/media/WORK/JOB/education/software_testing/PythonForTesters/env/firefox_esr/firefox")
         self.wd = WebDriver(capabilities={"marionette": False},
-                            firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
+                            firefox_binary="/media/WORK/JOB/education/software_testing/PythonForTesters/env/firefox_esr/firefox")
+        #self.wd = WebDriver(capabilities={"marionette": False},
+        #                    firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
         self.wd.implicitly_wait(60)
         self.session = SessionHelper(self)
         self.navigation = NavigationHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
+
+    def is_valid(self):
+        try:
+            self.wd.current_url
+            return True
+        except:
+            return False
 
     def destroy(self):
         self.wd.quit()

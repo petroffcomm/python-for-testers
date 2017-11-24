@@ -49,3 +49,9 @@ class GroupHelper:
         # submit group deletion
         wd.find_element_by_name("delete").click()
         self.app.navigation.return_to_groups_page()
+
+    def is_any_group_exists(self):
+        """ returns True if at least 1 group is displayed """
+        wd = self.app.wd
+        self.app.navigation.open_group_page()
+        return len(wd.find_elements_by_name("selected[]")) != 0

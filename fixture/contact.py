@@ -87,3 +87,9 @@ class ContactHelper:
 
         # return to home page
         self.app.navigation.go_to_home_page()
+
+    def is_any_contact_exists(self):
+        """ returns True if at least 1 contact is displayed """
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+        return len(wd.find_elements_by_name("selected[]")) != 0

@@ -12,4 +12,7 @@ contact_with_new_params = Contact(fname="new fname - " + date_str, lname="new ln
 
 
 def test_edit_first_contact(app):
+    if not app.contact.is_any_contact_exists():
+        app.contact.create(Contact(fname="contact for modification"))
+
     app.contact.edit_first_contact(contact_with_new_params)

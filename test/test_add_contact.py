@@ -3,7 +3,6 @@ from model.contact import Contact
 
 
 def test_add_contact(app):
-    app.session.login(username="admin", password="secret")
     app.contact.create(Contact(fname="test fname", mname="test mname",
                                lname="test lname", nickname="test nickname",
                                title="test title", company="test company",
@@ -16,20 +15,8 @@ def test_add_contact(app):
                                anniversary_month="February", anniversary_year="2009",
                                secondary_address="test address2", secondary_address_phone="555",
                                notes="note note note note note note note note note note"
-                                      "note note note note note note note note note note note note"))
-    app.session.logout()
+                                     "note note note note note note note note note note note note"))
 
 
 def test_add_empty_contact(app):
-    app.session.login(username="admin", password="secret")
-    app.contact.create(Contact(fname="", mname="", lname="", nickname="",
-                               title="", company="", primary_address="",
-                               primary_address_phone="", mobile_phone="",
-                               work_home="", fax="", email_1="", email_2="",
-                               email_3="", homepage="", birthday_day="",
-                               birthday_month="-", birthday_year="",
-                               anniversary_day="", anniversary_month="-",
-                               anniversary_year="", secondary_address="",
-                               secondary_address_phone="", notes=""))
-
-    app.session.logout()
+    app.contact.create(Contact())

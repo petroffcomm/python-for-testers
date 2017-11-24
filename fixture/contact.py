@@ -60,7 +60,7 @@ class ContactHelper:
         wd.find_element_by_xpath(".//input[@name='submit'][@value='Enter']").click()
 
         # return to home page
-        self.app.navigation.go_to_home_page()
+        self.app.navigation.return_to_home_page()
 
     def edit_first_contact(self, new_params):
         wd = self.app.wd
@@ -73,7 +73,7 @@ class ContactHelper:
         wd.find_element_by_xpath("(.//input[@value='Update'])[2]").click()
 
         # return to home page
-        self.app.navigation.go_to_home_page()
+        self.app.navigation.return_to_home_page()
 
     def delete_first_contact(self):
         wd = self.app.wd
@@ -86,7 +86,7 @@ class ContactHelper:
         wd.switch_to_alert().accept()
 
         # return to home page
-        self.app.navigation.go_to_home_page()
+        self.app.navigation.return_to_home_page()
 
     def is_any_contact_exists(self):
         """ returns True if at least 1 contact is displayed """

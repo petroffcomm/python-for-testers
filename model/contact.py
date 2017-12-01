@@ -1,4 +1,6 @@
 
+from sys import maxsize
+
 class Contact:
     def __init__(self, fname=None, mname=None, lname=None, primary_address_phone=None,
                        mobile_phone=None, work_home=None, fax=None,
@@ -6,8 +8,8 @@ class Contact:
                        title=None, company=None, nickname=None, primary_address=None,
                        secondary_address=None, homepage=None, birthday_day=None,
                        birthday_month="-", birthday_year=None, anniversary_day=None,
-                       anniversary_month="-", anniversary_year=None, notes=None):
-
+                       anniversary_month="-", anniversary_year=None, notes=None, id=None):
+        self.id = id
         self.fname = fname
         self.mname = mname
         self.lname = lname
@@ -32,3 +34,23 @@ class Contact:
         self.secondary_address = secondary_address
         self.secondary_address_phone = secondary_address_phone
         self.notes = notes
+
+    def __eq__(self, other):
+        # in case when we come across empty "id"
+        # we shouldn't take it into account
+        ids_equal = (self.id is None or other.id is None or self.id == other.id)
+        fnames_equal = (self.fname == other.fname)
+        lnames_equal = (self.lname == other.lname)
+        return ids_equal and fnames_equal and lnames_equal
+
+    def __repr__(self):
+        return "%s:%s %s" % (self.id, self.fname, self.lname)
+
+    def id_or_maxval(self):
+        """Method used to compare 2 instances by 'id'-parameter.
+        In case when some instance have empty 'id', method
+        returns 'maxsize' const."""
+        if self.id:
+            return int(self.id)
+        else:
+            return maxsize

@@ -15,8 +15,8 @@ class Application:
         #                    firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
         self.session = SessionHelper(self)
         self.navigation = NavigationHelper(self)
-        self.group = GroupHelper(self)
-        self.contact = ContactHelper(self)
+        self.groups = GroupHelper(self)
+        self.contacts = ContactHelper(self)
 
     def is_valid(self):
         try:

@@ -12,7 +12,15 @@ contact_with_new_params = Contact(fname="new fname - " + date_str, lname="new ln
 
 
 def test_edit_first_contact(app):
-    if not app.contact.is_any_contact_exists():
-        app.contact.create(Contact(fname="contact for modification"))
+    if not app.contacts.is_any_contact_exists():
+        app.contacts.create(Contact(fname="contact for modification"))
 
-    app.contact.edit_first_contact(contact_with_new_params)
+    old_contacts = app.contacts.get_contacts_list()
+    # save 'id' for contact to be modified (1-st group)
+    contact_with_new_params.id = old_contacts[0].id
+    app.contacts.edit_first_contact(contact_with_new_params)
+
+    new_contacts = app.contacts.get_contacts_list()
+    assert len(old_contacts)  == len(new_contacts)
+
+    old_contacts[0] = contact_with_new_params

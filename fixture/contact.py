@@ -1,6 +1,6 @@
 
 from selenium.webdriver.support.select import Select
-
+from model.contact import Contact
 
 class ContactHelper:
     def __init__(self, app):
@@ -16,6 +16,13 @@ class ContactHelper:
             wd.find_element_by_name(field_name).click()
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
+
+    @staticmethod
+    def none_or_value(val):
+        if val == "":
+            return None
+        else:
+            return val
 
     def set_dropdownlist_item(self, dlist_name, value_to_set):
         wd = self.app.wd
@@ -93,3 +100,19 @@ class ContactHelper:
         wd = self.app.wd
         self.app.navigation.open_home_page()
         return len(wd.find_elements_by_name("selected[]")) != 0
+
+    def get_contacts_list(self):
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+
+        contacts = []
+        for contact_row in wd.find_elements_by_xpath("//tr[@name='entry']"):
+            contact_cells = contact_row.find_elements_by_tag_name("td")
+
+            fname = self.none_or_value(contact_cells[2].text)
+            lname = self.none_or_value(contact_cells[1].text)
+            contact_id = contact_cells[0].find_element_by_name("selected[]").get_attribute("value")
+
+            contacts.append(Contact(id=contact_id, fname=fname, lname=lname))
+
+        return contacts

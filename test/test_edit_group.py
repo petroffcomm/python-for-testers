@@ -32,9 +32,9 @@ def test_edit_first_group_header(app):
     group.name = old_groups[0].name
     app.groups.edit_first_group(group)
 
-    new_groups = app.groups.get_group_list()
-    assert len(old_groups) == len(new_groups)
+    assert len(old_groups) == app.groups.count()
 
+    new_groups = app.groups.get_group_list()
     # replace 1-st group in old list (before modification)
     # by 'Group' instance which where used for modification
     old_groups[0] = group
@@ -51,8 +51,8 @@ def test_edit_first_group_name(app):
     group.id = old_groups[0].id
     app.groups.edit_first_group(group)
 
-    new_groups = app.groups.get_group_list()
-    assert len(old_groups) == len(new_groups)
+    assert len(old_groups) == app.groups.count()
 
+    new_groups = app.groups.get_group_list()
     old_groups[0] = group
     assert sorted(old_groups, key=Group.id_or_maxval) == sorted(new_groups, key=Group.id_or_maxval)

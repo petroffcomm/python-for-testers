@@ -20,7 +20,8 @@ def test_edit_first_contact(app):
     contact_with_new_params.id = old_contacts[0].id
     app.contacts.edit_first_contact(contact_with_new_params)
 
-    new_contacts = app.contacts.get_contacts_list()
-    assert len(old_contacts)  == len(new_contacts)
+    assert len(old_contacts) == app.contacts.count()
 
+    new_contacts = app.contacts.get_contacts_list()
     old_contacts[0] = contact_with_new_params
+    assert sorted(old_contacts, key=Contact.id_or_maxval) == sorted(new_contacts, key=Contact.id_or_maxval)

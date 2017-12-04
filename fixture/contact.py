@@ -9,8 +9,11 @@ class ContactHelper:
     contacts_cache = None
 
     def select_first_contact(self):
+        self.select_contact_by_index(0)
+
+    def select_contact_by_index(self, index):
         wd = self.app.wd
-        wd.find_element_by_xpath("(.//input[@name='selected[]'])[1]").click()
+        wd.find_elements_by_xpath("(.//input[@name='selected[]'])")[index].click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -74,11 +77,14 @@ class ContactHelper:
         self.contacts_cache = None
 
     def edit_first_contact(self, new_params):
+        self.edit_contact_by_index(0)
+
+    def edit_contact_by_index(self, index, new_params):
         wd = self.app.wd
         self.app.navigation.open_home_page()
 
         # init modification process for first item table
-        wd.find_element_by_xpath("(.//*[@id='maintable']//img[@alt='Edit'])[1]").click()
+        wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Edit'])")[index].click()
         self.fill_contact_form(new_params)
         # confirm modification
         wd.find_element_by_xpath("(.//input[@value='Update'])[2]").click()
@@ -89,10 +95,13 @@ class ContactHelper:
         self.contacts_cache = None
 
     def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.app.navigation.open_home_page()
 
-        self.select_first_contact()
+        self.select_contact_by_index(index)
         # init deletion process
         wd.find_element_by_xpath(".//input[@type='button'][@onclick='DeleteSel()']").click()
         # confirm deletion on popup window

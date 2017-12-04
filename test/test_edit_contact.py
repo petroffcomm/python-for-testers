@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from random import randrange
 
 from model.contact import Contact
 
@@ -17,11 +18,12 @@ def test_edit_first_contact(app):
 
     old_contacts = app.contacts.get_contacts_list()
     # save 'id' for contact to be modified (1-st group)
-    contact_with_new_params.id = old_contacts[0].id
-    app.contacts.edit_first_contact(contact_with_new_params)
+    index = randrange(len(old_contacts))
+    contact_with_new_params.id = old_contacts[index].id
+    app.contacts.edit_contact_by_index(index, contact_with_new_params)
 
     assert len(old_contacts) == app.contacts.count()
 
     new_contacts = app.contacts.get_contacts_list()
-    old_contacts[0] = contact_with_new_params
+    old_contacts[index] = contact_with_new_params
     assert sorted(old_contacts, key=Contact.id_or_maxval) == sorted(new_contacts, key=Contact.id_or_maxval)

@@ -77,7 +77,7 @@ class ContactHelper:
         self.contacts_cache = None
 
     def edit_first_contact(self, new_params):
-        self.edit_contact_by_index(0)
+        self.edit_contact_by_index(0, new_params)
 
     def edit_contact_by_index(self, index, new_params):
         wd = self.app.wd

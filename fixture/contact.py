@@ -1,4 +1,4 @@
-
+import re
 from selenium.webdriver.support.select import Select
 from model.contact import Contact
 
@@ -34,6 +34,16 @@ class ContactHelper:
         if value_to_set is not None:
             Select(wd.find_element_by_name(dlist_name)).select_by_visible_text(value_to_set)
 
+    def open_contact_to_edit_by_index(self, index):
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+        wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Edit'])")[index].click()
+
+    def open_contact_view_page_by_index(self, index):
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+        wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Details'])")[index].click()
+
     def fill_contact_form(self, contact):
         wd = self.app.wd
         self.change_field_value("firstname", contact.fname)
@@ -43,9 +53,9 @@ class ContactHelper:
         self.change_field_value("title", contact.title)
         self.change_field_value("company", contact.company)
         self.change_field_value("address", contact.primary_address)
-        self.change_field_value("home", contact.primary_address_phone)
+        self.change_field_value("home", contact.primary_phone)
         self.change_field_value("mobile", contact.mobile_phone)
-        self.change_field_value("work", contact.work_home)
+        self.change_field_value("work", contact.work_phone)
         self.change_field_value("fax", contact.fax)
         self.change_field_value("email", contact.email_1)
         self.change_field_value("email2", contact.email_2)
@@ -58,7 +68,7 @@ class ContactHelper:
         self.set_dropdownlist_item("amonth", contact.anniversary_month)
         self.change_field_value("ayear", contact.anniversary_year)
         self.change_field_value("address2", contact.secondary_address)
-        self.change_field_value("phone2", contact.secondary_address_phone)
+        self.change_field_value("phone2", contact.secondary_phone)
         self.change_field_value("notes", contact.notes)
 
     def create(self, contact):
@@ -81,10 +91,8 @@ class ContactHelper:
 
     def edit_contact_by_index(self, index, new_params):
         wd = self.app.wd
-        self.app.navigation.open_home_page()
 
-        # init modification process for first item table
-        wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Edit'])")[index].click()
+        self.open_contact_to_edit_by_index(index)
         self.fill_contact_form(new_params)
         # confirm modification
         wd.find_element_by_xpath("(.//input[@value='Update'])[2]").click()
@@ -136,7 +144,36 @@ class ContactHelper:
                 fname = self.none_or_value(contact_cells[2].text)
                 lname = self.none_or_value(contact_cells[1].text)
                 contact_id = contact_cells[0].find_element_by_name("selected[]").get_attribute("value")
+                all_phones = contact_cells[5].text
 
-                self.contacts_cache.append(Contact(id=contact_id, fname=fname, lname=lname))
+                self.contacts_cache.append(Contact(id=contact_id, fname=fname, lname=lname,
+                                                   all_phones_from_table_view=all_phones))
 
         return list(self.contacts_cache)
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_index(index)
+
+        fname = wd.find_element_by_name("firstname").get_attribute("value")
+        lname = wd.find_element_by_name("lastname").get_attribute("value")
+        cid = wd.find_element_by_name("id").get_attribute("value")
+        hphone = wd.find_element_by_name("home").get_attribute("value")
+        wphone = wd.find_element_by_name("work").get_attribute("value")
+        mobphone = wd.find_element_by_name("mobile").get_attribute("value")
+        secphone = wd.find_element_by_name("phone2").get_attribute("value")
+
+        return Contact(fname=fname, lname=lname, primary_phone=hphone, mobile_phone=mobphone,
+                       work_phone=wphone, secondary_phone=secphone, id=cid)
+
+    def get_contact_info_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_contact_view_page_by_index(index)
+        text = wd.find_element_by_id("content").text
+        hphone = re.search("H: (.*)", text).group(1)
+        mobphone = re.search("M: (.*)", text).group(1)
+        wphone = re.search("W: (.*)", text).group(1)
+        secphone = re.search("P: (.*)", text).group(1)
+
+        return Contact(primary_phone=hphone, mobile_phone=mobphone,
+                       work_phone=wphone, secondary_phone=secphone)

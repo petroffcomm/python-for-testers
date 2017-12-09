@@ -2,13 +2,14 @@
 from sys import maxsize
 
 class Contact:
-    def __init__(self, fname=None, mname=None, lname=None, primary_address_phone=None,
-                       mobile_phone=None, work_home=None, fax=None,
-                       secondary_address_phone=None, email_1=None, email_2=None, email_3=None,
-                       title=None, company=None, nickname=None, primary_address=None,
-                       secondary_address=None, homepage=None, birthday_day=None,
-                       birthday_month="-", birthday_year=None, anniversary_day=None,
-                       anniversary_month="-", anniversary_year=None, notes=None, id=None):
+    def __init__(self, fname=None, mname=None, lname=None, primary_phone=None,
+                 mobile_phone=None, work_phone=None, fax=None,
+                 secondary_phone=None, email_1=None, email_2=None, email_3=None,
+                 title=None, company=None, nickname=None, primary_address=None,
+                 secondary_address=None, homepage=None, birthday_day=None,
+                 birthday_month="-", birthday_year=None, anniversary_day=None,
+                 anniversary_month="-", anniversary_year=None, notes=None, id=None,
+                 all_phones_from_table_view=None):
         self.id = id
         self.fname = fname
         self.mname = mname
@@ -17,9 +18,9 @@ class Contact:
         self.title = title
         self.company = company
         self.primary_address = primary_address
-        self.primary_address_phone = primary_address_phone
+        self.primary_phone = primary_phone
         self.mobile_phone = mobile_phone
-        self.work_home = work_home
+        self.work_phone = work_phone
         self.fax = fax
         self.email_1 = email_1
         self.email_2 = email_2
@@ -32,7 +33,8 @@ class Contact:
         self.anniversary_month = anniversary_month
         self.anniversary_year = anniversary_year
         self.secondary_address = secondary_address
-        self.secondary_address_phone = secondary_address_phone
+        self.secondary_phone = secondary_phone
+        self.all_phones_from_table_view = all_phones_from_table_view
         self.notes = notes
 
     def __eq__(self, other):

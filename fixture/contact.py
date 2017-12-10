@@ -15,15 +15,19 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements_by_xpath("(.//input[@name='selected[]'])")[index].click()
 
-    def change_field_value(self, field_name, text):
+    def set_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
             wd.find_element_by_name(field_name).click()
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
 
+    def get_field_value(self, field_name):
+        wd = self.app.wd
+        return wd.find_element_by_name(field_name).get_attribute("value")
+
     @staticmethod
-    def none_or_value(val):
+    def set_none_or_value_of(val):
         if val == "":
             return None
         else:
@@ -46,30 +50,30 @@ class ContactHelper:
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
-        self.change_field_value("firstname", contact.fname)
-        self.change_field_value("middlename", contact.mname)
-        self.change_field_value("lastname", contact.lname)
-        self.change_field_value("nickname", contact.nickname)
-        self.change_field_value("title", contact.title)
-        self.change_field_value("company", contact.company)
-        self.change_field_value("address", contact.primary_address)
-        self.change_field_value("home", contact.primary_phone)
-        self.change_field_value("mobile", contact.mobile_phone)
-        self.change_field_value("work", contact.work_phone)
-        self.change_field_value("fax", contact.fax)
-        self.change_field_value("email", contact.email_1)
-        self.change_field_value("email2", contact.email_2)
-        self.change_field_value("email3", contact.email_3)
-        self.change_field_value("homepage", contact.homepage)
+        self.set_field_value("firstname", contact.fname)
+        self.set_field_value("middlename", contact.mname)
+        self.set_field_value("lastname", contact.lname)
+        self.set_field_value("nickname", contact.nickname)
+        self.set_field_value("title", contact.title)
+        self.set_field_value("company", contact.company)
+        self.set_field_value("address", contact.primary_address)
+        self.set_field_value("home", contact.primary_phone)
+        self.set_field_value("mobile", contact.mobile_phone)
+        self.set_field_value("work", contact.work_phone)
+        self.set_field_value("fax", contact.fax)
+        self.set_field_value("email", contact.email_1)
+        self.set_field_value("email2", contact.email_2)
+        self.set_field_value("email3", contact.email_3)
+        self.set_field_value("homepage", contact.homepage)
         self.set_dropdownlist_item("bday", contact.birthday_day)
         self.set_dropdownlist_item("bmonth", contact.birthday_month)
-        self.change_field_value("byear", contact.birthday_year)
+        self.set_field_value("byear", contact.birthday_year)
         self.set_dropdownlist_item("aday", contact.anniversary_day)
         self.set_dropdownlist_item("amonth", contact.anniversary_month)
-        self.change_field_value("ayear", contact.anniversary_year)
-        self.change_field_value("address2", contact.secondary_address)
-        self.change_field_value("phone2", contact.secondary_phone)
-        self.change_field_value("notes", contact.notes)
+        self.set_field_value("ayear", contact.anniversary_year)
+        self.set_field_value("address2", contact.secondary_address)
+        self.set_field_value("phone2", contact.secondary_phone)
+        self.set_field_value("notes", contact.notes)
 
     def create(self, contact):
         wd = self.app.wd
@@ -132,6 +136,19 @@ class ContactHelper:
         self.app.navigation.open_home_page()
         return len(wd.find_elements_by_name("selected[]"))
 
+    def produce_contact_instance_from_maintable_row(self, contact_row):
+        contact_cells = contact_row.find_elements_by_tag_name("td")
+
+        contact_id = contact_cells[0].find_element_by_name("selected[]").get_attribute("value")
+        fname = self.set_none_or_value_of(contact_cells[2].text)
+        lname = self.set_none_or_value_of(contact_cells[1].text)
+        primary_addr = self.set_none_or_value_of(contact_cells[3].text)
+        all_emails = self.set_none_or_value_of(contact_cells[4].text)
+        all_phones = self.set_none_or_value_of(contact_cells[5].text)
+
+        return Contact(id=contact_id, fname=fname, lname=lname, primary_address=primary_addr,
+                       phones_from_home_page=all_phones, emails_from_home_page=all_emails)
+
     def get_contacts_list(self):
         if self.contacts_cache is None:
             wd = self.app.wd
@@ -139,34 +156,42 @@ class ContactHelper:
 
             self.contacts_cache = []
             for contact_row in wd.find_elements_by_xpath("//tr[@name='entry']"):
-                contact_cells = contact_row.find_elements_by_tag_name("td")
+                contact = self.produce_contact_instance_from_maintable_row(contact_row)
 
-                fname = self.none_or_value(contact_cells[2].text)
-                lname = self.none_or_value(contact_cells[1].text)
-                contact_id = contact_cells[0].find_element_by_name("selected[]").get_attribute("value")
-                all_phones = contact_cells[5].text
-
-                self.contacts_cache.append(Contact(id=contact_id, fname=fname, lname=lname,
-                                                   all_phones_from_table_view=all_phones))
+                self.contacts_cache.append(contact)
 
         return list(self.contacts_cache)
 
-    def get_contact_info_from_edit_page(self, index):
+    def get_contact_info_from_home_page_by_index(self, index):
         wd = self.app.wd
+        self.app.navigation.open_home_page()
+
+        contact_row = wd.find_elements_by_xpath("//tr[@name='entry']")[index]
+        contact = self.produce_contact_instance_from_maintable_row(contact_row)
+
+        return contact
+
+    def get_contact_info_from_edit_page_by_index(self, index):
         self.open_contact_to_edit_by_index(index)
 
-        fname = wd.find_element_by_name("firstname").get_attribute("value")
-        lname = wd.find_element_by_name("lastname").get_attribute("value")
-        cid = wd.find_element_by_name("id").get_attribute("value")
-        hphone = wd.find_element_by_name("home").get_attribute("value")
-        wphone = wd.find_element_by_name("work").get_attribute("value")
-        mobphone = wd.find_element_by_name("mobile").get_attribute("value")
-        secphone = wd.find_element_by_name("phone2").get_attribute("value")
+        cid = self.get_field_value("id")
+        fname = self.get_field_value("firstname")
+        lname = self.get_field_value("lastname")
+        address = self.get_field_value("address")
+        hphone = self.get_field_value("home")
+        wphone = self.get_field_value("work")
+        mobphone = self.get_field_value("mobile")
+        secphone = self.get_field_value("phone2")
+        email_1 = self.get_field_value("email")
+        email_2 = self.get_field_value("email2")
+        email_3 = self.get_field_value("email3")
 
-        return Contact(fname=fname, lname=lname, primary_phone=hphone, mobile_phone=mobphone,
-                       work_phone=wphone, secondary_phone=secphone, id=cid)
+        return Contact(id=cid, fname=fname, lname=lname, primary_address=address,
+                       primary_phone=hphone, mobile_phone=mobphone, work_phone=wphone,
+                       email_1=email_1, email_2=email_2, email_3=email_3,
+                       secondary_phone=secphone)
 
-    def get_contact_info_from_view_page(self, index):
+    def get_contact_info_from_view_page_by_index(self, index):
         wd = self.app.wd
         self.open_contact_view_page_by_index(index)
         text = wd.find_element_by_id("content").text

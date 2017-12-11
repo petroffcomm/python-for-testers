@@ -2,7 +2,9 @@
 from random import randrange
 from datetime import datetime
 from model.contact import Contact
-from utils.data_transformations import *
+from utils.data_transformations import produce_instance_for_home_page_view,\
+                                        merge_phones_like_on_home_page, \
+                                        merge_emails_like_on_home_page
 
 
 def test_comparison_of_table_and_edit_views(app):

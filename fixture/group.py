@@ -1,4 +1,5 @@
 from model.group import Group
+from utils.data_transformations import set_none_or_value_of
 
 
 class GroupHelper:
@@ -88,7 +89,11 @@ class GroupHelper:
             self.group_cache = []
 
             for element in wd.find_elements_by_css_selector('span.group'):
-                text = element.text
+                # we need to use 'set_none_or_value_of()' because some objects
+                # in list we need to compare to current one
+                # could be created with 'None'-value (but not empty string)
+                # in the 'name'-field
+                text = set_none_or_value_of(element.text)
                 group_id = element.find_element_by_name("selected[]").get_attribute("value")
                 self.group_cache.append(Group(name=text, id=group_id))
 

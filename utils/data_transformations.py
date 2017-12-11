@@ -1,6 +1,7 @@
 
 import re
 from model.contact import Contact
+from model.group import Group
 
 
 def clear_phone_for_table_view(s):
@@ -40,7 +41,8 @@ def set_none_or_value_of(val):
 
 
 def produce_instance_for_home_page_view(contact):
-    return Contact(fname=set_none_or_value_of(contact.fname.strip()),
+    return Contact(id=contact.id,
+                   fname=set_none_or_value_of(contact.fname.strip()),
                    lname=set_none_or_value_of(contact.lname.strip()),
                    primary_address=set_none_or_value_of(contact.primary_address.strip()),
                    primary_phone=set_none_or_value_of(contact.primary_phone.strip()),
@@ -51,3 +53,18 @@ def produce_instance_for_home_page_view(contact):
                    email_3=set_none_or_value_of(contact.email_3.strip()),
                    secondary_phone=set_none_or_value_of(contact.secondary_phone.strip())
                    )
+
+
+def produce_instance_for_groups_page_view(group):
+    # 1. We need to use 'set_none_or_value_of()' because some
+    # objects in list we need to compare to current one
+    # could be created with 'None'-value (but not empty string)
+    # in the 'name'-field
+    #
+    # 2. We need to substitute multiple 'space'-chars to 1
+    # because this is what application does for groups' names
+    return Group(name=set_none_or_value_of(re.sub('\s+', ' ', group.name).strip()),
+                 header=group.header,
+                 footer=group.footer,
+                 id=group.id
+                 )

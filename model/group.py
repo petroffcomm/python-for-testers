@@ -15,7 +15,7 @@ class Group:
         return (self.id is None or other.id is None or self.id == other.id) and (self.name == other.name)
 
     def __repr__(self):
-        return "%s:%s" % (self.id, self.name)
+        return "%s:%s:%s:%s" % (self.id, self.name, self.header, self.footer)
 
     def id_or_maxval(self):
         """Method used to compare 2 instances by 'id'-parameter.

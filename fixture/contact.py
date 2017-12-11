@@ -1,6 +1,7 @@
 import re
 from selenium.webdriver.support.select import Select
 from model.contact import Contact
+from utils.data_transformations import set_none_or_value_of
 
 class ContactHelper:
     def __init__(self, app):
@@ -25,13 +26,6 @@ class ContactHelper:
     def get_field_value(self, field_name):
         wd = self.app.wd
         return wd.find_element_by_name(field_name).get_attribute("value")
-
-    @staticmethod
-    def set_none_or_value_of(val):
-        if val == "":
-            return None
-        else:
-            return val
 
     def set_dropdownlist_item(self, dlist_name, value_to_set):
         wd = self.app.wd
@@ -140,11 +134,11 @@ class ContactHelper:
         contact_cells = contact_row.find_elements_by_tag_name("td")
 
         contact_id = contact_cells[0].find_element_by_name("selected[]").get_attribute("value")
-        fname = self.set_none_or_value_of(contact_cells[2].text)
-        lname = self.set_none_or_value_of(contact_cells[1].text)
-        primary_addr = self.set_none_or_value_of(contact_cells[3].text)
-        all_emails = self.set_none_or_value_of(contact_cells[4].text)
-        all_phones = self.set_none_or_value_of(contact_cells[5].text)
+        fname = set_none_or_value_of(contact_cells[2].text)
+        lname = set_none_or_value_of(contact_cells[1].text)
+        primary_addr = set_none_or_value_of(contact_cells[3].text)
+        all_emails = set_none_or_value_of(contact_cells[4].text)
+        all_phones = set_none_or_value_of(contact_cells[5].text)
 
         return Contact(id=contact_id, fname=fname, lname=lname, primary_address=primary_addr,
                        phones_from_home_page=all_phones, emails_from_home_page=all_emails)

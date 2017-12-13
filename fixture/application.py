@@ -16,9 +16,9 @@ class Application:
             #self.wd = WebDriver(capabilities={"marionette": False},
             #                    firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
         elif browser == "chrome":
-            self.wd == webdriver.Chrome()
+            self.wd = webdriver.Chrome()
         elif browser == "ie":
-            self.wd == webdriver.Ie()
+            self.wd = webdriver.Ie()
         else:
             raise ValueError("Unrecognized browser: %s" % browser)
 

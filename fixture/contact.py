@@ -32,6 +32,10 @@ class ContactHelper:
         if value_to_set is not None:
             Select(wd.find_element_by_name(dlist_name)).select_by_visible_text(value_to_set)
 
+    def get_dropdownlist_item(self, dlist_name):
+        wd = self.app.wd
+        return Select(wd.find_element_by_name(dlist_name)).first_selected_option.text
+
     def open_contact_to_edit_by_index(self, index):
         wd = self.app.wd
         self.app.navigation.open_home_page()
@@ -43,7 +47,6 @@ class ContactHelper:
         wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Details'])")[index].click()
 
     def fill_contact_form(self, contact):
-        wd = self.app.wd
         self.set_field_value("firstname", contact.fname)
         self.set_field_value("middlename", contact.mname)
         self.set_field_value("lastname", contact.lname)
@@ -69,6 +72,33 @@ class ContactHelper:
         self.set_field_value("phone2", contact.secondary_phone)
         self.set_field_value("notes", contact.notes)
 
+    def get_form_data(self):
+        return Contact(id=self.get_field_value("id"),
+                       fname=self.get_field_value("firstname"),
+                       lname=self.get_field_value("lastname"),
+                       mname=self.get_field_value("middlename"),
+                       nickname=self.get_field_value("nickname"),
+                       title=self.get_field_value("title"),
+                       company=self.get_field_value("company"),
+                       primary_address=self.get_field_value("address"),
+                       primary_phone=self.get_field_value("home"),
+                       mobile_phone=self.get_field_value("mobile"),
+                       work_phone=self.get_field_value("work"),
+                       fax=self.get_field_value("fax"),
+                       email_1=self.get_field_value("email"),
+                       email_2=self.get_field_value("email2"),
+                       email_3=self.get_field_value("email3"),
+                       birthday_day=self.get_dropdownlist_item("bday"),
+                       birthday_month=self.get_dropdownlist_item("bmonth"),
+                       birthday_year=self.get_field_value("byear"),
+                       anniversary_day=self.get_dropdownlist_item("aday"),
+                       anniversary_month=self.get_dropdownlist_item("amonth"),
+                       anniversary_year=self.get_field_value("ayear"),
+                       secondary_address=self.get_field_value("address2"),
+                       secondary_phone=self.get_field_value("phone2"),
+                       notes=self.get_field_value("notes")
+                       )
+
     def create(self, contact):
         wd = self.app.wd
 
@@ -92,6 +122,10 @@ class ContactHelper:
 
         self.open_contact_to_edit_by_index(index)
         self.fill_contact_form(new_params)
+
+        # save modified contact's data to the 'contact'-object
+        modified_contact_data = self.get_form_data()
+
         # confirm modification
         wd.find_element_by_xpath("(.//input[@value='Update'])[2]").click()
 
@@ -99,6 +133,8 @@ class ContactHelper:
         self.app.navigation.return_to_home_page()
         # reset records' cache
         self.contacts_cache = None
+
+        return modified_contact_data
 
     def delete_first_contact(self):
         self.delete_contact_by_index(0)

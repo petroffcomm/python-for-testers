@@ -63,6 +63,8 @@ def produce_instance_for_groups_page_view(group):
     #
     # 2. We need to substitute multiple 'space'-chars to 1
     # because this is what application does for groups' names
+    # 3. Web-browser trims edge 'space'-chars so we need to
+    # take this into account.
     return Group(name=set_none_or_value_of(re.sub('\s+', ' ', group.name).strip()),
                  header=group.header,
                  footer=group.footer,

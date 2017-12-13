@@ -15,17 +15,27 @@ class GroupHelper:
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
 
-    def fill_group_form(self, group):
-        self.change_field_value("group_name", group.name)
-        self.change_field_value("group_header", group.header)
-        self.change_field_value("group_footer", group.footer)
-
-    def change_field_value(self, field_name, text):
+    def set_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
             wd.find_element_by_name(field_name).click()
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
+
+    def get_field_value(self, field_name):
+        wd = self.app.wd
+        return wd.find_element_by_name(field_name).get_attribute("value")
+
+    def fill_group_form(self, group):
+        self.set_field_value("group_name", group.name)
+        self.set_field_value("group_header", group.header)
+        self.set_field_value("group_footer", group.footer)
+
+    def get_form_data(self):
+        return Group(id=self.get_field_value("id"),
+                     name=self.get_field_value("group_name"),
+                     header=self.get_field_value("group_header"),
+                     footer=self.get_field_value("group_footer"))
 
     def create(self, group):
         wd = self.app.wd
@@ -51,11 +61,16 @@ class GroupHelper:
         # init group editing
         wd.find_element_by_name("edit").click()
         self.fill_group_form(new_params)
+
+        # save modified group data to the 'group'-object
+        modified_group_data = self.get_form_data()
         # submit modification saving
         wd.find_element_by_name("update").click()
         self.app.navigation.return_to_groups_page()
 
         self.group_cache = None
+
+        return modified_group_data
 
     def delete_first_group(self):
         self.delete_group_by_index(0)

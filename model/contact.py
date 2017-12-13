@@ -48,7 +48,7 @@ class Contact:
         return ids_equal and fnames_equal and lnames_equal
 
     def __repr__(self):
-        return "%s:%s %s" % (self.id, self.fname, self.lname)
+        return "%s:%s:%s:%s" % (self.id, self.fname, self.lname, self.primary_address)
 
     def id_or_maxval(self):
         """Method used to compare 2 instances by 'id'-parameter.

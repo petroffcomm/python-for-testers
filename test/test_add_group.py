@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
-import random
-import string
 
 from model.group import Group
+from utils.testdata_gen import random_string
 from utils.data_transformations import produce_instance_for_groups_page_view
-
-
-def random_string(prefix, maxlen):
-    # '" "*10'-part is used to raise number of cases
-    # when 'space'-char is returned
-    symbols = string.ascii_letters + string.digits + string.punctuation + " "*10
-    return prefix + " " + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
 
 
 testdata = [Group(name="", header="", footer="")] + [

@@ -9,7 +9,7 @@ class NavigationHelper:
         # checking specific checkbox presence - not only URL
         if not (wd.current_url.endswith("/index.php")
                 and len(wd.find_elements_by_xpath("//form[@name='MainForm'][@id='MassCB']")) > 0):
-            wd.get("http://localhost/addressbook/index.php")
+            wd.get(self.app.base_url)
 
     def return_to_home_page(self):
         wd = self.app.wd

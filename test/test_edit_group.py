@@ -3,10 +3,9 @@ from random import randrange
 
 import pytest
 
+from datagen.utils import random_string
 from model.group import Group
-from utils.testdata_gen import random_string
 from utils.data_transformations import produce_instance_for_groups_page_view
-
 
 testdata = [Group(name=random_string("name", 10), header=random_string("header", 20), footer=random_string("footer", 20))
             for i in range(5)

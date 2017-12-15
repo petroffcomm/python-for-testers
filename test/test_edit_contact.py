@@ -3,9 +3,9 @@ from random import randrange
 
 import pytest
 
+from datagen.utils import *
 from model.contact import Contact
 from utils.data_transformations import produce_instance_for_home_page_view
-from utils.testdata_gen import *
 
 testdata = [Contact(fname=rnd_name_string("new fname", 15), lname=rnd_name_string("new lname", 15),
                     primary_address=random_string("address", 30), primary_phone=rnd_phone_string(7),

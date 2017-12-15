@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 
+from datagen.utils import *
 from model.contact import Contact
-from utils.testdata_gen import *
-
 
 testdata = [Contact(fname=rnd_name_string("fname", 15), mname=rnd_name_string("mname", 15),
                     lname=rnd_name_string("lname", 15), nickname="test nickname",

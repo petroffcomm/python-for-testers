@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import pytest
-import json, jsonpickle
-import os.path
 import importlib
+import json
+import jsonpickle
+import os.path
+
+import pytest
 
 from fixture.application import Application
 
@@ -58,7 +60,7 @@ def pytest_generate_tests(metafunc):
 
 
 def load_from_module(module):
-    return importlib.import_module("data.%s" % module).testdata
+    return importlib.import_module("data.static_%s" % module).testdata
 
 
 def load_from_json(module):

@@ -10,11 +10,11 @@ from fixture.contact import ContactHelper
 class Application:
     def __init__(self, browser, base_url):
         if browser == "firefox":
+            #self.wd = webdriver.Firefox(capabilities={"marionette": False},
+            #                            firefox_binary=
+            #                            "/media/WORK/JOB/education/software_testing/PythonForTesters/env/firefox_esr/firefox")
             self.wd = webdriver.Firefox(capabilities={"marionette": False},
-                                        firefox_binary=
-                                        "/media/WORK/JOB/education/software_testing/PythonForTesters/env/firefox_esr/firefox")
-            #self.wd = WebDriver(capabilities={"marionette": False},
-            #                    firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
+                                        firefox_binary="/Applications/Firefox 2.app/Contents/MacOS/firefox")
         elif browser == "chrome":
             self.wd = webdriver.Chrome()
         elif browser == "ie":

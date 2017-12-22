@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
-from random import randrange
+import random
 
 from model.group import Group
+from utils.data_transformations import produce_instance_for_groups_page_view
 
 
-def test_delete_some_group(app):
-    if not app.groups.is_any_group_exists():
+def test_delete_some_group(app, db, check_ui):
+    if len(db.get_group_list()) == 0:
         app.groups.create(Group(name="test group for deletion"))
 
-    old_groups = app.groups.get_group_list()
-    index = randrange(len(old_groups))
-    app.groups.delete_group_by_index(index)
+    old_groups = db.get_group_list()
+    group_to_delete = random.choice(old_groups)
+    app.groups.delete_group_by_id(group_to_delete.id)
 
-    assert len(old_groups) - 1 == app.groups.count()
+    if check_ui:
+        assert len(old_groups) - 1 == app.groups.count()
 
-    new_groups = app.groups.get_group_list()
-    old_groups[index:index + 1] = []
-    assert old_groups == new_groups
+    new_groups = db.get_group_list()
+    old_groups.remove(group_to_delete)
+    assert sorted(old_groups, key=Group.id_or_maxval) == sorted(new_groups, key=Group.id_or_maxval)
+
+    if check_ui:
+        db_groups_list = list(map(produce_instance_for_groups_page_view, new_groups))
+        ui_groups_list = app.groups.get_group_list()
+        assert sorted(db_groups_list, key=Group.id_or_maxval) == sorted(ui_groups_list, key=Group.id_or_maxval)

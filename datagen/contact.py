@@ -7,21 +7,26 @@ import sys
 from datagen.utils import *
 from model.contact import Contact
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:], "n:f:", ["number of contacts", "file to write to"])
-except getopt.GetoptError as err:
-    # print help information and exit:
-    print(err)  # will print something like "option -a not recognized"
-    sys.exit(2)
-
+# default values
 contacts_qty = 5
 target_file = "data/contacts.json"
 
-for option, arg in opts:
-    if option == "-n":
-        contacts_qty = int(arg)
-    elif option == "-f":
-        target_file = arg
+# this part of code is not executed while importing this module -
+# only while running itself
+if __name__ == "__main__":
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "n:f:", ["number of contacts", "file to write to"])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(err)  # will print something like "option -a not recognized"
+        sys.exit(2)
+
+    for option, arg in opts:
+        if option == "-n":
+            contacts_qty = int(arg)
+        elif option == "-f":
+            target_file = arg
+
 
 testdata_for_adding = [Contact()] + [
             Contact(fname=rnd_name_string("fname", 15), mname=rnd_name_string("mname", 15),

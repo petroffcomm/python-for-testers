@@ -7,21 +7,25 @@ import sys
 from datagen.utils import random_string
 from model.group import Group
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:], "n:f:", ["number of groups", "file to write to"])
-except getopt.GetoptError as err:
-    # print help information and exit:
-    print(err)  # will print something like "option -a not recognized"
-    sys.exit(2)
-
+# default values
 groups_qty = 5
 target_file = "data/groups.json"
 
-for option, arg in opts:
-    if option == "-n":
-        groups_qty = int(arg)
-    elif option == "-f":
-        target_file = arg
+# this part of code is not executed while importing this module -
+# only while running itself
+if __name__ == "__main__":
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "n:f:", ["number of groups", "file to write to"])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(err)  # will print something like "option -a not recognized"
+        sys.exit(2)
+
+    for option, arg in opts:
+        if option == "-n":
+            groups_qty = int(arg)
+        elif option == "-f":
+            target_file = arg
 
 
 testdata = [Group(name="", header="", footer="")] + [

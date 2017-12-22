@@ -16,6 +16,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements_by_xpath("(.//input[@name='selected[]'])")[index].click()
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_xpath("//td/input[@id='%s']/.." % id).click()
+
     def set_field_value(self, field_name, text):
         wd = self.app.wd
         if text is not None:
@@ -40,6 +44,11 @@ class ContactHelper:
         wd = self.app.wd
         self.app.navigation.open_home_page()
         wd.find_elements_by_xpath("(.//*[@id='maintable']//img[@alt='Edit'])")[index].click()
+
+    def open_contact_to_edit_by_id(self, id):
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+        wd.find_element_by_xpath("//td/input[@id='%s']/../..//img[@alt='Edit']" % id).click()
 
     def open_contact_view_page_by_index(self, index):
         wd = self.app.wd
@@ -136,6 +145,25 @@ class ContactHelper:
 
         return modified_contact_data
 
+    def edit_contact_by_id(self, new_params):
+        wd = self.app.wd
+
+        self.open_contact_to_edit_by_id(new_params.id)
+        self.fill_contact_form(new_params)
+
+        # save modified contact's data to the 'contact'-object
+        modified_contact_data = self.get_form_data()
+
+        # confirm modification
+        wd.find_element_by_xpath("(.//input[@value='Update'])[2]").click()
+
+        # return to home page
+        self.app.navigation.return_to_home_page()
+        # reset records' cache
+        self.contacts_cache = None
+
+        return modified_contact_data
+
     def delete_first_contact(self):
         self.delete_contact_by_index(0)
 
@@ -144,6 +172,21 @@ class ContactHelper:
         self.app.navigation.open_home_page()
 
         self.select_contact_by_index(index)
+        # init deletion process
+        wd.find_element_by_xpath(".//input[@type='button'][@onclick='DeleteSel()']").click()
+        # confirm deletion on popup window
+        wd.switch_to_alert().accept()
+
+        # return to home page
+        self.app.navigation.return_to_home_page()
+        # reset records' cache
+        self.contacts_cache = None
+
+    def delete_contact_by_id(self, cid):
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+
+        self.select_contact_by_id(cid)
         # init deletion process
         wd.find_element_by_xpath(".//input[@type='button'][@onclick='DeleteSel()']").click()
         # confirm deletion on popup window

@@ -99,3 +99,11 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+# ppetrov's specific additions
+.idea/workspace.xml
+.idea/dictionaries/*
+check_db_connection.py
+data/contacts.json
+data/groups.json

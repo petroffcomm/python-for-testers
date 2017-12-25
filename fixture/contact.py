@@ -1,5 +1,10 @@
 import re
+
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+
 from model.contact import Contact
 from utils.data_transformations import set_none_or_value_of
 
@@ -31,10 +36,15 @@ class ContactHelper:
         wd = self.app.wd
         return wd.find_element_by_name(field_name).get_attribute("value")
 
-    def set_dropdownlist_item(self, dlist_name, value_to_set):
+    def set_dropdownlist_item_by_text(self, dlist_name, value_to_set):
         wd = self.app.wd
         if value_to_set is not None:
             Select(wd.find_element_by_name(dlist_name)).select_by_visible_text(value_to_set)
+
+    def set_dropdownlist_item_by_value(self, dlist_name, id_to_select):
+        wd = self.app.wd
+        if id_to_select is not None:
+            Select(wd.find_element_by_name(dlist_name)).select_by_value(id_to_select)
 
     def get_dropdownlist_item(self, dlist_name):
         wd = self.app.wd
@@ -71,11 +81,11 @@ class ContactHelper:
         self.set_field_value("email2", contact.email_2)
         self.set_field_value("email3", contact.email_3)
         self.set_field_value("homepage", contact.homepage)
-        self.set_dropdownlist_item("bday", contact.birthday_day)
-        self.set_dropdownlist_item("bmonth", contact.birthday_month)
+        self.set_dropdownlist_item_by_text("bday", contact.birthday_day)
+        self.set_dropdownlist_item_by_text("bmonth", contact.birthday_month)
         self.set_field_value("byear", contact.birthday_year)
-        self.set_dropdownlist_item("aday", contact.anniversary_day)
-        self.set_dropdownlist_item("amonth", contact.anniversary_month)
+        self.set_dropdownlist_item_by_text("aday", contact.anniversary_day)
+        self.set_dropdownlist_item_by_text("amonth", contact.anniversary_month)
         self.set_field_value("ayear", contact.anniversary_year)
         self.set_field_value("address2", contact.secondary_address)
         self.set_field_value("phone2", contact.secondary_phone)
@@ -196,6 +206,30 @@ class ContactHelper:
         self.app.navigation.return_to_home_page()
         # reset records' cache
         self.contacts_cache = None
+
+    def add_contact_to_group(self, contact, group):
+        """ places chosen contact into chosen group """
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+
+        self.select_contact_by_id(contact.id)
+        self.set_dropdownlist_item_by_value("to_group", group.id)
+        wd.find_element_by_xpath(".//input[@type='submit'][@name='add']").click()
+
+    def remove_contact_from_group(self, contact, group):
+        """ removes chosen contact from chosen group """
+        wd = self.app.wd
+        self.app.navigation.open_home_page()
+        self.set_dropdownlist_item_by_value("group", group.id)
+
+        # we need to add this wait because dropdown list selection
+        # event reloads contacts' list table
+        WebDriverWait(wd, 10).until(
+            presence_of_element_located((By.XPATH, "//td/input[@id='%s']/.." % contact.id))
+        )
+
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_xpath(".//input[@type='submit'][@name='remove']").click()
 
     def is_any_contact_exists(self):
         """ returns True if at least 1 contact is displayed """

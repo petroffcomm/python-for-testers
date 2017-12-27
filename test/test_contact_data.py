@@ -1,13 +1,10 @@
 
-from random import randrange
 from datetime import datetime
 from model.contact import Contact
-from utils.data_transformations import produce_instance_for_home_page_view,\
-                                        merge_phones_like_on_home_page, \
-                                        merge_emails_like_on_home_page
+from utils.data_transformations import produce_instance_for_home_page_view
 
 
-def test_comparison_of_table_and_edit_views(app):
+def test_comparison_of_table_and_edit_views(app, orm):
     if not app.contacts.is_any_contact_exists():
         date_str = datetime.now().timestamp().__str__()
         app.contacts.create(Contact(fname="new fname - " + date_str, lname="new lname - " + date_str,
@@ -16,13 +13,6 @@ def test_comparison_of_table_and_edit_views(app):
                                     secondary_phone="5757", email_1="modified1@test.test",
                                     email_2="modified2@test.test", email_3="modified3@test.test"))
 
-    index = randrange(app.contacts.count())
-    contact_from_edit_page = produce_instance_for_home_page_view(
-                                    app.contacts.get_contact_info_from_edit_page_by_index(index))
-    contact_from_home_page = app.contacts.get_contact_info_from_home_page_by_index(index)
-    assert contact_from_edit_page.fname == contact_from_home_page.fname
-    assert contact_from_edit_page.lname == contact_from_home_page.lname
-    assert contact_from_edit_page.primary_address == contact_from_home_page.primary_address
-
-    assert merge_phones_like_on_home_page(contact_from_edit_page) == contact_from_home_page.phones_from_home_page
-    assert merge_emails_like_on_home_page(contact_from_edit_page) == contact_from_home_page.emails_from_home_page
+    db_contacts_list = list(map(produce_instance_for_home_page_view, orm.get_contacts_list()))
+    ui_contacts_list = app.contacts.get_contacts_list()
+    assert sorted(db_contacts_list, key=Contact.id_or_maxval) == sorted(ui_contacts_list, key=Contact.id_or_maxval)

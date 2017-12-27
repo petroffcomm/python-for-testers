@@ -1,4 +1,3 @@
-
 from sys import maxsize
 
 
@@ -45,10 +44,14 @@ class Contact:
         ids_equal = (self.id is None or other.id is None or self.id == other.id)
         fnames_equal = (self.fname == other.fname)
         lnames_equal = (self.lname == other.lname)
-        return ids_equal and fnames_equal and lnames_equal
+        addr_equal = (self.primary_address == other.primary_address)
+        hpage_emails_equal = (self.emails_from_home_page == other.emails_from_home_page)
+        hpage_phones_equal = (self.phones_from_home_page == other.phones_from_home_page)
+        return ids_equal and fnames_equal and lnames_equal and addr_equal and hpage_emails_equal and hpage_phones_equal
 
     def __repr__(self):
-        return "%s:%s:%s:%s" % (self.id, self.fname, self.lname, self.primary_address)
+        return "%s:%s:%s:%s:%s:%s" % (self.id, self.fname, self.lname, self.primary_address,
+                                      self.emails_from_home_page, self.phones_from_home_page)
 
     def id_or_maxval(self):
         """Method used to compare 2 instances by 'id'-parameter.

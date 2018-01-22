@@ -60,6 +60,8 @@ def orm(request):
 
 @pytest.fixture
 def check_ui(request):
+    # this returns 'True' in case when option exists in test execution options list
+    # or returns 'False' in case when option is absent in test execution options list
     return request.config.getoption("--check_ui")
 
 

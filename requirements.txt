@@ -4,3 +4,5 @@ selenium
 jsonpickle
 pony==0.7.3
 pymysql==0.8.0
+lxml
+pytest-allure-adaptor

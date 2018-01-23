@@ -2,5 +2,5 @@ pytest
 pytest_bdd
 selenium
 jsonpickle
-pony=0.7.3
-pymysql=0.8.0
+pony==0.7.3
+pymysql==0.8.0

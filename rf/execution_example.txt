@@ -1,0 +1,5 @@
+# first step
+source ../env/bin/activate
+# second step
+pybot --pythonpath ./ rf/contact_scenarios.robot
+pybot --pythonpath ./ rf/*.robot

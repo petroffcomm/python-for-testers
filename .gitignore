@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
+env36/
 build/
 develop-eggs/
 dist/
@@ -101,9 +102,16 @@ ENV/
 .mypy_cache/
 
 
+# Allure reports data
+allure*/
+
+
+# html files
+*.html
+
+
 # ppetrov's specific additions
 .idea/workspace.xml
-.idea/dictionaries/*
+.idea/dictionaries/
 check_db_connection.py
-data/contacts.json
-data/groups.json
+data/*.json

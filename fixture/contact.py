@@ -8,6 +8,7 @@ from selenium.webdriver.support.expected_conditions import presence_of_element_l
 from model.contact import Contact
 from utils.data_transformations import set_none_or_value_of
 
+
 class ContactHelper:
     def __init__(self, app):
         self.app = app
